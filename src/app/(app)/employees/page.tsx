@@ -32,7 +32,7 @@ export default async function EmployeesPage({ searchParams }: { searchParams: Pr
         title="Employees"
         subtitle={`${rows.length} ${status === "all" ? "total" : status}`}
         actions={
-          <Button render={<Link href="/employees/new" />} variant="secondary">
+          <Button render={<Link href="/employees/new" />} nativeButton={false} variant="secondary">
             Add employee
           </Button>
         }
