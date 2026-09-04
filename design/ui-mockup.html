@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NA Office HR — UI Mockup (LOCKED)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   PALETTE — LOCKED. Do not add colours.
+   ========================================================= */
+:root{
+  --chalk:#EAECEB;   /* page background */
+  --white:#FFFFFF;   /* tables, forms, cards */
+  --navy:#1E2229;    /* text, sidebar, secondary buttons */
+  --sand:#D0C3B1;    /* dividers, holiday cells */
+  --soft:#E4DDD1;    /* soft lines */
+  --amber:#D97706;   /* ACTIONS ONLY: primary buttons, active nav mark, hand-typed dot */
+  --red:#B4432B;     /* ABSENT / UNPAID ONLY */
+
+  /* derived tints — same hues, alpha only */
+  --navy-70:rgba(30,34,41,.70);
+  --navy-45:rgba(30,34,41,.45);
+  --navy-12:rgba(30,34,41,.12);
+  --navy-06:rgba(30,34,41,.06);
+  --red-12:rgba(180,67,43,.12);
+  --amber-12:rgba(217,119,6,.12);
+
+  --font:'IBM Plex Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  --r:16px;        /* cards */
+  --r-sm:10px;     /* buttons, inputs */
+  --shadow:0 1px 2px rgba(30,34,41,.04), 0 6px 20px rgba(30,34,41,.05);
+  --sidebar:232px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--chalk);color:var(--navy);font:14px/1.5 var(--font);font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em}
+h1{font-size:24px}h2{font-size:15px}h3{font-size:13px;font-weight:500;color:var(--navy-70)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+table{border-collapse:collapse;width:100%}
+th{font-weight:500;color:var(--navy-45);text-align:left;font-size:12px}
+td,th{padding:11px 14px;border-bottom:1px solid var(--navy-06)}
+tr:last-child td{border-bottom:0}
+.num{text-align:right}
+.muted{color:var(--navy-70)}
+.dim{color:var(--navy-45)}
+.small{font-size:12px}
+
+/* ---------- app shell ---------- */
+.app{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh}
+.sidebar{background:var(--navy);color:var(--chalk);display:flex;flex-direction:column;padding:24px 12px;position:sticky;top:0;height:100vh}
+.brand{padding:4px 14px 24px;font-weight:600;font-size:15px;letter-spacing:.01em}
+.brand span{display:block;font-weight:400;font-size:11px;color:rgba(234,236,235,.5);margin-top:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 14px 10px 28px;margin:2px 0;color:rgba(234,236,235,.7);position:relative;font-size:13.5px;border-radius:var(--r-sm)}
+.nav a:hover{color:var(--chalk);background:rgba(255,255,255,.05)}
+.nav a.active{color:var(--chalk);background:rgba(255,255,255,.08);font-weight:500}
+.nav a.active::before{content:"";position:absolute;left:13px;top:50%;width:6px;height:6px;margin-top:-3px;background:var(--amber);border-radius:50%}
+.nav .sep{height:1px;background:rgba(234,236,235,.08);margin:14px 14px}
+.nav .badge{margin-left:auto;background:rgba(255,255,255,.1);color:var(--chalk);font-size:11px;padding:1px 8px;border-radius:999px}
+.sidebar .foot{margin-top:auto;padding:16px 14px 0;font-size:12px;color:rgba(234,236,235,.5);border-top:1px solid rgba(234,236,235,.08)}
+.sidebar .foot b{color:var(--chalk);font-weight:500}
+
+.topbar{display:flex;align-items:center;gap:16px;padding:20px 32px 4px;background:var(--chalk);position:sticky;top:0;z-index:5}
+.topbar .grow{flex:1}
+.company{display:inline-flex;align-items:center;gap:10px;background:var(--white);border-radius:999px;padding:8px 14px 8px 16px;font-weight:500;box-shadow:var(--shadow)}
+.company::after{content:"▾";color:var(--navy-45);font-size:11px}
+.today{color:var(--navy-70)}
+.main{padding:22px 32px 56px}
+
+/* ---------- controls ---------- */
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-sm);padding:9px 16px;font-weight:500;font-size:13px;border:0;line-height:1.2}
+.btn-primary{background:var(--amber);color:#fff}
+.btn-secondary{background:var(--navy);color:var(--chalk)}
+.btn-ghost{background:var(--white);color:var(--navy);box-shadow:var(--shadow)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn-sm{padding:6px 12px;font-size:12px}
+.input{background:var(--white);border:1px solid var(--soft);border-radius:var(--r-sm);padding:8px 12px;font:inherit;color:var(--navy);width:100%}
+.input:focus{outline:2px solid var(--amber);outline-offset:-1px;border-color:var(--amber)}
+.input.inline{width:88px;text-align:right;padding:5px 10px;font-size:13px;background:var(--chalk);border-color:transparent}
+label.f{display:block;font-size:12px;color:var(--navy-70);margin-bottom:4px}
+.field{margin-bottom:14px}
+.row{display:flex;gap:12px;align-items:center}
+.row.between{justify-content:space-between}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px}
+.head .sub{color:var(--navy-70);margin-top:4px}
+.card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow)}
+.card .pad,.card.pad{padding:20px 22px}
+.card .hd{padding:16px 22px;border-bottom:1px solid var(--navy-06);display:flex;align-items:center;justify-content:space-between}
+.card table td:first-child,.card table th:first-child{padding-left:22px}
+.card table td:last-child,.card table th:last-child{padding-right:22px}
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(4,1fr)}.g31{grid-template-columns:2fr 1fr}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 9px;border-radius:999px;color:var(--navy-70);background:var(--chalk);vertical-align:middle}
+.tag.probation{color:var(--navy);background:var(--soft)}
+.tag.locked{background:var(--navy);color:var(--chalk)}
+.tag.draft{background:var(--soft);color:var(--navy)}
+.stat .v{font-size:34px;font-weight:500;letter-spacing:-.02em;margin-top:10px;line-height:1.1}
+.stat .v.red{color:var(--red)}
+.banner{display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:var(--r-sm);background:var(--amber-12);color:var(--navy);margin-bottom:18px}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);vertical-align:middle}
+.list td:first-child{font-weight:500}
+.red{color:var(--red)}
+
+/* ---------- attendance grid ---------- */
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--navy-70);align-items:center}
+.legend i{display:inline-block;width:18px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px;border:1px solid var(--navy-06)}
+.att{overflow:auto;border-radius:var(--r);background:var(--white);box-shadow:var(--shadow)}
+.att table{width:max-content;min-width:100%}
+.att th,.att td{padding:0;border-bottom:1px solid var(--navy-06);border-right:1px solid var(--navy-06)}
+.att th{height:46px;text-align:center;font-size:11px;background:var(--white);position:sticky;top:0;z-index:2;vertical-align:middle}
+.att th b{display:block;font-size:13px;font-weight:600;color:var(--navy)}
+.att th.off,.att td.off{background:var(--chalk)}
+.att th.hol,.att td.hol{background:var(--sand)}
+.att th.today b{color:var(--amber)}
+.att .emp{position:sticky;left:0;z-index:3;background:var(--white);text-align:left;padding:0 18px;min-width:220px;font-weight:500;border-right:1px solid var(--soft)}
+.att .emp .code{display:block;font-size:11px;color:var(--navy-45);font-weight:400}
+.att .sum{position:sticky;right:0;z-index:3;background:var(--white);border-left:1px solid var(--soft);text-align:center;min-width:88px;font-size:12px;color:var(--navy-70)}
+.att .sum b{color:var(--red);font-weight:600}
+.c{width:34px;height:40px;text-align:center;vertical-align:middle;font-size:12px;font-weight:500;position:relative;cursor:pointer;color:var(--navy-70)}
+.c:hover{outline:2px solid var(--navy);outline-offset:-2px;z-index:1}
+.c.P{color:var(--navy)}
+.c.LP{background:var(--navy-12);color:var(--navy)}
+.c.LU{background:var(--red-12);color:var(--red)}
+.c.A{background:var(--red);color:#fff}
+.c .hand{position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--amber)}
+.c .noout{position:absolute;bottom:0;right:0;border-style:solid;border-width:0 0 7px 7px;border-color:transparent transparent var(--navy) transparent;opacity:.5}
+.c.sel{outline:2px solid var(--amber);outline-offset:-2px;z-index:1}
+.c.future{color:transparent;cursor:default}
+.c.future:hover{outline:0}
+
+.pop{position:absolute;z-index:20;background:var(--white);border-radius:14px;box-shadow:0 2px 6px rgba(30,34,41,.06),0 16px 40px rgba(30,34,41,.16);width:290px;padding:16px;left:calc(var(--sidebar) + 520px);top:380px}
+.pop .t{font-weight:600;margin-bottom:2px}
+.pop .opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0}
+.pop .opts button{border:0;background:var(--chalk);border-radius:8px;padding:8px 10px;font-size:12px;text-align:left;display:flex;align-items:center;gap:8px;color:var(--navy)}
+.pop .opts button i{width:12px;height:12px;border-radius:3px;border:1px solid var(--navy-06);display:inline-block;flex:none}
+.pop .opts button.on{background:var(--white);outline:2px solid var(--navy)}
+.pop .times{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}
+.pop .times .input{padding:5px 8px;font-size:12px}
+
+/* ---------- payroll ---------- */
+.pay td,.pay th{white-space:nowrap}
+.pay td.edit{padding:4px 8px}
+.pay tfoot td{font-weight:600;border-top:1px solid var(--navy-12);background:var(--chalk)}
+.pay tfoot td:first-child{border-radius:0 0 0 var(--r)}.pay tfoot td:last-child{border-radius:0 0 var(--r) 0}
+.strip{display:flex;gap:36px;padding:18px 22px;border-bottom:1px solid var(--navy-06);font-size:15px}
+.strip b{display:block;font-size:12px;font-weight:500;color:var(--navy-45);margin-bottom:2px}
+
+/* ---------- payslip ---------- */
+.slip{max-width:760px;margin:0 auto;background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);padding:44px 48px}
+.slip .top{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:2px solid var(--navy);margin-bottom:20px}
+.slip .kv{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:13px}
+.slip .kv span{color:var(--navy-70)}
+.slip h3{margin:22px 0 8px}
+.slip table td{padding:7px 0;border-bottom:1px solid var(--soft)}
+.slip .net{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px;padding-top:14px;border-top:2px solid var(--navy);font-size:15px;font-weight:600}
+.slip .net .v{font-size:24px}
+.slip .foot{margin-top:36px;display:flex;justify-content:space-between;font-size:12px;color:var(--navy-70)}
+.slip .foot .sig{width:180px;border-top:1px solid var(--navy);padding-top:6px}
+@media print{.sidebar,.topbar,.noprint{display:none!important}.app{display:block}.main{padding:0}.slip{border:0;max-width:none}}
+
+/* ---------- check-in (public) ---------- */
+.checkin{min-height:100vh;display:grid;place-items:center;padding:60px 40px;background:var(--chalk)}
+.ck-wrap{display:grid;grid-template-columns:repeat(3,320px);gap:28px;align-items:start}
+.ck{background:var(--white);border-radius:24px;padding:30px 26px;text-align:center;position:relative;box-shadow:var(--shadow)}
+.ck .co{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--navy-45)}
+.ck h2{margin:6px 0 18px;font-size:18px}
+.pins{display:flex;justify-content:center;gap:14px;margin:14px 0 24px}
+.pins i{width:14px;height:14px;border-radius:50%;border:2px solid var(--navy);display:block}
+.pins i.on{background:var(--navy)}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.keys button{height:62px;border-radius:14px;border:0;background:var(--chalk);font-size:22px;font-weight:500;color:var(--navy)}
+.keys button:active{background:var(--soft)}
+.keys button.fn{font-size:13px;font-weight:500;color:var(--navy-70)}
+.ck .name{font-size:22px;font-weight:600;margin:4px 0 2px}
+.ck .st{color:var(--navy-70);margin-bottom:22px}
+.ck .big{width:100%;height:64px;font-size:17px;border-radius:14px;justify-content:center}
+.ck .link{display:block;margin-top:16px;font-size:13px;color:var(--navy-70);text-decoration:underline;text-underline-offset:3px}
+.ck .step{position:absolute;top:-24px;left:0;font-size:11px;color:var(--navy-45);text-transform:uppercase;letter-spacing:.08em}
+.tp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0}
+.tp .input{text-align:center;font-size:18px;padding:10px 0}
+.err{color:var(--red);font-size:12px;margin-top:8px}
+
+/* ---------- employee detail ---------- */
+.tabs{display:inline-flex;gap:2px;background:var(--white);border-radius:999px;padding:4px;margin-bottom:20px;box-shadow:var(--shadow)}
+.tabs a{padding:7px 16px;color:var(--navy-70);border-radius:999px;font-weight:500;font-size:13px}
+.tabs a.on{color:var(--chalk);background:var(--navy)}
+.hist td{vertical-align:top}
+.hist .ch{font-size:12px}
+.hist .ch s{color:var(--navy-45)}
+
+/* mockup-only screen switcher */
+.screen{display:none}.screen.on{display:block}
+.mockbar{position:fixed;bottom:14px;right:14px;z-index:99;background:var(--navy);color:var(--chalk);border-radius:999px;padding:8px 12px;font-size:11px;display:flex;gap:6px;align-items:center;box-shadow:0 8px 24px rgba(30,34,41,.3)}
+.mockbar button{background:transparent;border:1px solid rgba(234,236,235,.25);color:var(--chalk);border-radius:999px;padding:3px 10px;font-size:11px}
+.mockbar button.on{background:var(--amber);border-color:var(--amber)}
+</style>
+</head>
+<body>
+
+<div class="mockbar noprint">
+  <span style="opacity:.6;margin-right:4px">Mockup screens</span>
+  <button data-go="dashboard" class="on">Dashboard</button>
+  <button data-go="attendance">Attendance</button>
+  <button data-go="payroll">Payroll</button>
+  <button data-go="payslip">Payslip</button>
+  <button data-go="employee">Employee</button>
+  <button data-go="checkin">Check-in</button>
+</div>
+
+<!-- ============================ APP SHELL ============================ -->
+<div class="app" id="shell">
+  <aside class="sidebar">
+    <div class="brand">NA Office HR<span>Internal · v0.1</span></div>
+    <nav class="nav">
+      <a href="#" data-go="dashboard" class="active">Dashboard</a>
+      <a href="#" data-go="employee">Employees <span class="badge">23</span></a>
+      <a href="#" data-go="attendance">Attendance</a>
+      <a href="#">Holidays</a>
+      <a href="#">Advances <span class="badge">4</span></a>
+      <a href="#" data-go="payroll">Payroll</a>
+      <a href="#">Reports</a>
+      <a href="#">Settings</a>
+      <div class="sep"></div>
+      <a href="#" data-go="checkin">Check-in page ↗</a>
+    </nav>
+    <div class="foot">Last backup <b>3 days ago</b><br><span style="font-size:11px">Sept 2, 2026 · 11:40 PM</span></div>
+  </aside>
+
+  <div>
+    <header class="topbar">
+      <div class="company">Nahope LLC</div>
+      <div class="today">Friday, Sept 5, 2026 · 8:14 PM</div>
+      <div class="grow"></div>
+      <button class="btn btn-ghost btn-sm">Log out</button>
+    </header>
+
+    <!-- ================= DASHBOARD ================= -->
+    <main class="main screen on" id="s-dashboard">
+      <div class="head">
+        <div><h1>Dashboard</h1><div class="sub">Shift date Friday, Sept 5 — shift 8:00 PM to 5:00 AM</div></div>
+        <button class="btn btn-secondary">Download backup</button>
+      </div>
+
+      <div class="grid g4" style="margin-bottom:16px">
+        <div class="card pad stat"><h3>Checked in</h3><div class="v">18</div><div class="small muted">of 23 active</div></div>
+        <div class="card pad stat"><h3>Not yet in</h3><div class="v">3</div><div class="small muted">shift started 14 min ago</div></div>
+        <div class="card pad stat"><h3>Absent / unpaid leave</h3><div class="v red">2</div><div class="small muted">marked today</div></div>
+        <div class="card pad stat"><h3>Advances outstanding</h3><div class="v">Rs 145,000</div><div class="small muted">4 employees</div></div>
+      </div>
+
+      <div class="grid g31">
+        <div class="card">
+          <div class="hd"><h2>Tonight</h2><a href="#" data-go="attendance" class="small muted">Open attendance grid →</a></div>
+          <table class="list">
+            <thead><tr><th>Employee</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Bilal Ahmed <span class="dim small">E-014</span></td><td>8:04 PM</td><td class="dim">—</td><td>Present</td></tr>
+              <tr><td>Sana Iqbal <span class="dim small">E-003</span></td><td>7:58 PM</td><td class="dim">—</td><td>Present</td></tr>
+              <tr><td>Hamza Tariq <span class="dim small">E-021</span> <span class="tag probation">Probation</span></td><td>8:31 PM <span class="dot" title="typed by hand"></span></td><td class="dim">—</td><td>Present</td></tr>
+              <tr><td>Usman Raza <span class="dim small">E-009</span></td><td class="dim">—</td><td class="dim">—</td><td class="dim">Not yet in</td></tr>
+              <tr><td>Ayesha Khan <span class="dim small">E-011</span></td><td class="dim">—</td><td class="dim">—</td><td><span class="red">Absent</span> <span class="dim small">· manual</span></td></tr>
+              <tr><td>Fahad Malik <span class="dim small">E-017</span></td><td class="dim">—</td><td class="dim">—</td><td><span class="red">Unpaid leave</span> <span class="dim small">· quota over</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid" style="align-content:start">
+          <div class="card">
+            <div class="hd"><h2>Probation ending soon</h2></div>
+            <table class="list">
+              <tr><td>Hamza Tariq</td><td class="num">Sept 12</td><td class="num dim">7 days</td></tr>
+              <tr><td>Zainab Ali</td><td class="num">Sept 28</td><td class="num dim">23 days</td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <div class="hd"><h2>Check-in page health</h2></div>
+            <div class="pad small">
+              <div class="row between"><span class="muted">Failed PIN attempts (24h)</span><b>0</b></div>
+              <div class="row between" style="margin-top:6px"><span class="muted">Hand-typed times this month</span><b>6</b></div>
+              <div class="row between" style="margin-top:6px"><span class="muted">Missing check-outs</span><b>2</b></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="hd"><h2>Payroll</h2></div>
+            <div class="pad small">
+              <div class="row between"><span>August 2026</span><span class="tag locked">Locked</span></div>
+              <div class="row between" style="margin-top:8px"><span>September 2026</span><span class="dim">Not generated</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= ATTENDANCE GRID ================= -->
+    <main class="main screen" id="s-attendance">
+      <div class="head">
+        <div>
+          <h1>Attendance</h1>
+          <div class="sub">Columns are <b>shift dates</b> — Friday column = Friday night's shift, including the 5 AM Saturday check-out.</div>
+        </div>
+        <div class="row">
+          <button class="btn btn-ghost btn-sm">‹</button>
+          <div class="company" style="min-width:150px;justify-content:space-between">September 2026</div>
+          <button class="btn btn-ghost btn-sm">›</button>
+          <button class="btn btn-ghost">Bulk mark ▾</button>
+          <button class="btn btn-primary">Save changes <span style="opacity:.8">· 3</span></button>
+        </div>
+      </div>
+
+      <div class="legend" style="margin-bottom:12px">
+        <span><i style="background:#fff"></i>Present</span>
+        <span><i style="background:var(--chalk)"></i>Weekly off</span>
+        <span><i style="background:var(--sand)"></i>Public holiday</span>
+        <span><i style="background:var(--navy-12)"></i>Paid leave</span>
+        <span><i style="background:var(--red-12)"></i>Unpaid leave</span>
+        <span><i style="background:var(--red)"></i>Absent</span>
+        <span style="margin-left:8px"><span class="dot"></span>&nbsp; time typed by hand</span>
+        <span><i style="border:0;width:0;height:0;border-style:solid;border-width:0 0 8px 8px;border-color:transparent transparent var(--navy-45) transparent;border-radius:0"></i>no check-out</span>
+      </div>
+
+      <div class="att">
+        <table id="grid"></table>
+      </div>
+
+      <div class="pop noprint">
+        <div class="t">Bilal Ahmed · Wed, Sept 3</div>
+        <div class="small muted">Shift 8:00 PM – 5:00 AM · source: check-in</div>
+        <div class="opts">
+          <button><i style="background:#fff"></i>Present</button>
+          <button><i style="background:var(--red)"></i>Absent</button>
+          <button><i style="background:var(--navy-12)"></i>Paid leave <span class="dim" style="margin-left:auto">5 left</span></button>
+          <button class="on"><i style="background:var(--red-12)"></i>Unpaid leave</button>
+          <button><i style="background:var(--chalk)"></i>Weekly off</button>
+          <button><i style="background:var(--sand)"></i>Holiday</button>
+        </div>
+        <div class="times">
+          <div><label class="f">Check in</label><input class="input" value="—"></div>
+          <div><label class="f">Check out</label><input class="input" value="—"></div>
+        </div>
+        <div class="field" style="margin:10px 0 0"><input class="input" value="called in sick, quota over" style="font-size:12px;padding:5px 8px"></div>
+        <div class="row between" style="margin-top:12px">
+          <span class="small dim">Override — logged</span>
+          <span class="row" style="gap:6px"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Apply</button></span>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= PAYROLL ================= -->
+    <main class="main screen" id="s-payroll">
+      <div class="head">
+        <div><h1>Payroll — September 2026 <span class="tag draft">Draft</span></h1><div class="sub">Generated Sept 30, 11:52 PM · divisor 30 · 23 employees</div></div>
+        <div class="row">
+          <button class="btn btn-ghost">Regenerate draft</button>
+          <button class="btn btn-ghost">Export CSV</button>
+          <button class="btn btn-secondary">Lock payroll</button>
+        </div>
+      </div>
+
+      <div class="banner">
+        <span class="dot" style="width:8px;height:8px"></span>
+        <span><b>2 hand-typed times</b> and <b>1 missing check-out</b> in this month. Review the grid before locking — locked numbers never recompute.</span>
+        <a href="#" data-go="attendance" style="margin-left:auto;text-decoration:underline;text-underline-offset:3px">Open grid</a>
+      </div>
+
+      <div class="card">
+        <div class="strip">
+          <div><b>Gross base</b>Rs 2,415,000</div>
+          <div><b>Deductions</b><span class="red">Rs 62,500</span></div>
+          <div><b>Advances</b>Rs 35,000</div>
+          <div><b>Manual adj.</b>+ Rs 10,000</div>
+          <div><b>Net payable</b><strong>Rs 2,327,500</strong></div>
+        </div>
+        <div style="overflow:auto">
+        <table class="pay">
+          <thead><tr>
+            <th>Employee</th><th class="num">Salary</th><th class="num">Payable<br>days</th><th class="num">Unpaid<br>days</th>
+            <th class="num">Base</th><th class="num">Deduction</th><th class="num">Advance</th>
+            <th class="num">Additions</th><th class="num">Deductions</th><th class="num">Net payable</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>Sana Iqbal <span class="dim small">E-003</span></td><td class="num">150,000</td><td class="num">30</td><td class="num dim">0</td>
+              <td class="num">150,000</td><td class="num dim">0</td><td class="num dim">0</td>
+              <td class="edit"><input class="input inline" value="0"></td><td class="edit"><input class="input inline" value="0"></td>
+              <td class="num"><b>150,000</b></td>
+            </tr>
+            <tr>
+              <td>Bilal Ahmed <span class="dim small">E-014</span></td><td class="num">150,000</td><td class="num">30</td><td class="num red">1</td>
+              <td class="num">150,000</td><td class="num red">5,000</td><td class="num">10,000</td>
+              <td class="edit"><input class="input inline" value="0"></td><td class="edit"><input class="input inline" value="0"></td>
+              <td class="num"><b>135,000</b></td>
+            </tr>
+            <tr>
+              <td>Hamza Tariq <span class="dim small">E-021</span> <span class="tag probation">Probation</span></td><td class="num">80,000</td><td class="num">30</td><td class="num red">2</td>
+              <td class="num">80,000</td><td class="num red">5,333</td><td class="num dim">0</td>
+              <td class="edit"><input class="input inline" value="0"></td><td class="edit"><input class="input inline" value="0"></td>
+              <td class="num"><b>74,667</b></td>
+            </tr>
+            <tr>
+              <td>Ayesha Khan <span class="dim small">E-011</span></td><td class="num">120,000</td><td class="num">30</td><td class="num red">3</td>
+              <td class="num">120,000</td><td class="num red">12,000</td><td class="num dim">0</td>
+              <td class="edit"><input class="input inline" value="10,000" style="border-color:var(--amber)"></td><td class="edit"><input class="input inline" value="0"></td>
+              <td class="num"><b>118,000</b> <span class="dim small" title="note: Eid bonus">✎</span></td>
+            </tr>
+            <tr>
+              <td>Zainab Ali <span class="dim small">E-022</span> <span class="tag">Joined Sept 16</span></td><td class="num">90,000</td><td class="num">15</td><td class="num dim">0</td>
+              <td class="num">45,000</td><td class="num dim">0</td><td class="num dim">0</td>
+              <td class="edit"><input class="input inline" value="0"></td><td class="edit"><input class="input inline" value="0"></td>
+              <td class="num"><b>45,000</b></td>
+            </tr>
+            <tr>
+              <td>Fahad Malik <span class="dim small">E-017</span></td><td class="num">100,000</td><td class="num">30</td><td class="num red">4</td>
+              <td class="num">100,000</td><td class="num red">13,333</td><td class="num">25,000 <span class="dim small">last</span></td>
+              <td class="edit"><input class="input inline" value="0"></td><td class="edit"><input class="input inline" value="0"></td>
+              <td class="num"><b>61,667</b></td>
+            </tr>
+            <tr><td colspan="10" class="dim small" style="text-align:center;padding:10px">… 17 more</td></tr>
+          </tbody>
+          <tfoot><tr>
+            <td>Total · 23</td><td class="num">2,415,000</td><td class="num">660</td><td class="num red">14</td>
+            <td class="num">2,415,000</td><td class="num red">62,500</td><td class="num">35,000</td><td class="num">10,000</td><td class="num">0</td><td class="num">2,327,500</td>
+          </tr></tfoot>
+        </table>
+        </div>
+      </div>
+      <p class="small dim" style="margin-top:12px">Additions / deductions need a note. Lock writes a snapshot of every number above and reduces advance balances. Unlock requires a reason and is logged.</p>
+    </main>
+
+    <!-- ================= PAYSLIP ================= -->
+    <main class="main screen" id="s-payslip">
+      <div class="head noprint">
+        <div><h1>Payslip</h1><div class="sub">Bilal Ahmed · September 2026 · <span class="tag locked">Locked</span></div></div>
+        <div class="row"><button class="btn btn-ghost">‹ Previous</button><button class="btn btn-ghost">Next ›</button><button class="btn btn-secondary" onclick="window.print()">Print / PDF</button></div>
+      </div>
+
+      <div class="slip">
+        <div class="top">
+          <div><div style="font-size:18px;font-weight:600">Nahope LLC</div><div class="small muted">Payslip · September 2026</div></div>
+          <div style="text-align:right"><div style="font-weight:600">Bilal Ahmed</div><div class="small muted">E-014 · Support Executive<br>Joined Mar 3, 2025 · Confirmed</div></div>
+        </div>
+
+        <div class="kv">
+          <div><span>Monthly salary</span><br>Rs 150,000</div>
+          <div><span>Per-day rate</span><br>Rs 5,000 <span class="dim">(÷ 30)</span></div>
+          <div><span>Bank</span><br>Meezan Bank · 0123-4567890-1</div>
+          <div><span>Paid leave balance</span><br>5 of 8 remaining</div>
+        </div>
+
+        <h3>Attendance</h3>
+        <table>
+          <tr><td>Present</td><td class="num">22</td></tr>
+          <tr><td>Weekly off (paid)</td><td class="num">8</td></tr>
+          <tr><td>Public holiday (paid)</td><td class="num">0</td></tr>
+          <tr><td>Paid leave</td><td class="num">0</td></tr>
+          <tr><td class="red">Unpaid leave</td><td class="num red">1 <span class="dim">· Sept 3</span></td></tr>
+          <tr><td class="red">Absent</td><td class="num red">0</td></tr>
+          <tr><td><b>Payable days</b></td><td class="num"><b>30</b></td></tr>
+        </table>
+
+        <h3>Calculation</h3>
+        <table>
+          <tr><td>Base <span class="dim">30 days × Rs 5,000, capped at monthly salary</span></td><td class="num">150,000</td></tr>
+          <tr><td class="red">Unpaid days <span class="dim">1 × Rs 5,000</span></td><td class="num red">− 5,000</td></tr>
+          <tr><td>Advance installment <span class="dim">3 of 5 · Rs 20,000 remaining after this</span></td><td class="num">− 10,000</td></tr>
+          <tr><td>Other additions</td><td class="num dim">0</td></tr>
+          <tr><td>Other deductions</td><td class="num dim">0</td></tr>
+        </table>
+
+        <div class="net"><span>Net payable</span><span class="v">Rs 135,000</span></div>
+
+        <div class="foot">
+          <div>Generated Sept 30, 2026 · Locked Oct 1, 2026<br>Numbers are a snapshot and do not change after locking.</div>
+          <div class="sig">Authorised signature</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= EMPLOYEE DETAIL ================= -->
+    <main class="main screen" id="s-employee">
+      <div class="head">
+        <div>
+          <h1>Bilal Ahmed <span class="dim" style="font-weight:400;font-size:16px">E-014</span></h1>
+          <div class="sub">Support Executive · Joined Mar 3, 2025 · Confirmed · Active</div>
+        </div>
+        <div class="row">
+          <button class="btn btn-ghost">Mark as exited</button>
+          <button class="btn btn-secondary">Edit details</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <a href="#" class="on">Overview</a><a href="#">Payslips</a><a href="#">Advances</a><a href="#">Salary history</a><a href="#">History</a>
+      </div>
+
+      <div class="grid g31">
+        <div class="grid">
+          <div class="card">
+            <div class="hd"><h2>Details</h2></div>
+            <div class="pad" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 24px;font-size:13px">
+              <div><label class="f">Phone</label>0300 1234567</div>
+              <div><label class="f">Email</label>bilal@nahope.com</div>
+              <div><label class="f">CNIC</label>35202-1234567-1</div>
+              <div><label class="f">Salary</label>Rs 150,000 <span class="dim small">since Jul 1, 2026</span></div>
+              <div><label class="f">Leave quota</label>8 / year <span class="dim small">(company default)</span></div>
+              <div><label class="f">Check-in PIN</label>•••• <a href="#" class="small" style="text-decoration:underline;text-underline-offset:3px">reset</a></div>
+              <div><label class="f">Bank</label>Meezan Bank</div>
+              <div><label class="f">Account</label>0123-4567890-1</div>
+              <div><label class="f">Probation</label>3 months · ended Jun 3, 2025</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="hd"><h2>History</h2><span class="small dim">audit log · newest first</span></div>
+            <table class="hist">
+              <tr><td class="dim small" style="width:150px">Sept 4, 9:10 PM</td><td><b>Attendance override</b> · Sept 3<div class="ch"><s>Absent</s> → Unpaid leave · note: "called in sick, quota over"</div></td></tr>
+              <tr><td class="dim small">Jul 1, 2026</td><td><b>Salary changed</b><div class="ch"><s>Rs 135,000</s> → Rs 150,000 · effective Jul 1</div></td></tr>
+              <tr><td class="dim small">May 20, 2026</td><td><b>Advance given</b><div class="ch">Rs 50,000 · 5 × Rs 10,000 from Jul 2026</div></td></tr>
+              <tr><td class="dim small">Jun 3, 2025</td><td><b>Probation ended</b><div class="ch">Auto · stage → Confirmed</div></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="grid" style="align-content:start">
+          <div class="card pad stat"><h3>This year</h3>
+            <div class="row between" style="margin-top:10px"><span>Paid leave used</span><b>3 / 8</b></div>
+            <div class="row between" style="margin-top:6px"><span class="red">Unpaid leave</span><b class="red">2</b></div>
+            <div class="row between" style="margin-top:6px"><span class="red">Absent</span><b class="red">1</b></div>
+            <div class="row between" style="margin-top:6px"><span>Hand-typed times</span><b>4</b></div>
+          </div>
+          <div class="card">
+            <div class="hd"><h2>Advance</h2><span class="tag">Active</span></div>
+            <div class="pad small">
+              <div class="row between"><span class="muted">Given May 20</span><b>Rs 50,000</b></div>
+              <div class="row between" style="margin-top:6px"><span class="muted">Installment</span><b>Rs 10,000 / month</b></div>
+              <div class="row between" style="margin-top:6px"><span class="muted">Remaining</span><b>Rs 30,000</b></div>
+              <div class="row" style="margin-top:12px;gap:6px"><button class="btn btn-ghost btn-sm">Pause</button><button class="btn btn-ghost btn-sm">Close early</button></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="hd"><h2>Recent payslips</h2></div>
+            <table class="list">
+              <tr><td>Aug 2026</td><td class="num">Rs 140,000</td><td class="num"><span class="tag locked">Locked</span></td></tr>
+              <tr><td>Jul 2026</td><td class="num">Rs 135,000</td><td class="num"><span class="tag locked">Locked</span></td></tr>
+              <tr><td>Jun 2026</td><td class="num">Rs 135,000</td><td class="num"><span class="tag locked">Locked</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ============================ PUBLIC CHECK-IN ============================ -->
+<div class="checkin screen" id="s-checkin">
+  <div class="ck-wrap">
+
+    <div class="ck">
+      <div class="step">Step 1 · keypad</div>
+      <div class="co">Nahope LLC</div>
+      <h2>Enter your PIN</h2>
+      <div class="pins"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+      <div class="keys">
+        <button>1</button><button>2</button><button>3</button>
+        <button>4</button><button>5</button><button>6</button>
+        <button>7</button><button>8</button><button>9</button>
+        <button class="fn">Clear</button><button>0</button><button class="fn">⌫</button>
+      </div>
+      <div class="small dim" style="margin-top:18px">Friday, Sept 5 · 8:14 PM</div>
+    </div>
+
+    <div class="ck">
+      <div class="step">Step 2 · one button</div>
+      <div class="co">Nahope LLC</div>
+      <div class="name">Bilal Ahmed</div>
+      <div class="st">Not checked in yet · Friday shift</div>
+      <button class="btn btn-primary big">Check in now</button>
+      <a href="#" class="link">Forgot earlier? Enter the time yourself</a>
+      <a href="#" class="link" style="text-decoration:none;color:var(--navy-45)">Start over</a>
+    </div>
+
+    <div class="ck">
+      <div class="step">Step 2b · manual time</div>
+      <div class="co">Nahope LLC</div>
+      <div class="name">Bilal Ahmed</div>
+      <div class="st">Checked in 8:04 PM · <span class="dot"></span> typed by hand</div>
+      <label class="f" style="text-align:left">Check-out time</label>
+      <div class="tp">
+        <input class="input" value="4">
+        <input class="input" value="58">
+        <select class="input" style="font-size:16px"><option>AM</option><option>PM</option></select>
+      </div>
+      <button class="btn btn-secondary big">Save check-out</button>
+      <div class="err">Must be after 8:04 PM check-in and within tonight's shift.</div>
+      <a href="#" class="link" style="text-decoration:none;color:var(--navy-45)">Start over</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ---------- mockup-only: screen switching ---------- */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+id));
+  document.getElementById('shell').style.display = id==='checkin' ? 'none' : '';
+  document.querySelectorAll('[data-go]').forEach(b=>{
+    const on=b.dataset.go===id;
+    if(b.tagName==='BUTTON') b.classList.toggle('on',on);
+    if(b.closest('.nav')) b.classList.toggle('active',on);
+  });
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();go(b.dataset.go)}));
+
+/* ---------- attendance grid: employees × Sept 2026 shift dates ---------- */
+(function(){
+  const days=30, y=2026, m=8; // September
+  const holidays={6:'Defence Day'}; // Sept 6 2026 is a Sunday → stays weekly_off (section 5 order)
+  const today=5;
+  const weeklyOff=[0,6];
+  const emps=[
+    ['Sana Iqbal','E-003'],['Bilal Ahmed','E-014'],['Hamza Tariq','E-021','Probation'],['Ayesha Khan','E-011'],
+    ['Usman Raza','E-009'],['Fahad Malik','E-017'],['Zainab Ali','E-022','Probation'],['Omar Farooq','E-005'],
+    ['Maryam Shah','E-012'],['Ali Hassan','E-001'],['Hira Butt','E-019'],['Danish Ahmed','E-007']
+  ];
+  const seeded=(a,b)=>((a*9301+b*49297+233)%233280)/233280;
+  let html='<thead><tr><th class="emp">Employee</th>';
+  for(let d=1;d<=days;d++){
+    const dow=new Date(y,m,d).getDay(); const wd='SMTWTFS'[dow];
+    const isOff=weeklyOff.includes(dow);
+    const cls=[isOff?'off':'', (holidays[d]&&!isOff)?'hol':'', d===today?'today':''].join(' ');
+    html+=`<th class="${cls}" title="${holidays[d]||''}">${wd}<b>${d}</b></th>`;
+  }
+  html+='<th class="sum">Unpaid</th></tr></thead><tbody>';
+  emps.forEach((e,i)=>{
+    let unpaid=0;
+    html+=`<tr><td class="emp">${e[0]}${e[2]?' <span class="tag probation" style="margin-left:4px">Probation</span>':''}<span class="code">${e[1]}</span></td>`;
+    for(let d=1;d<=days;d++){
+      const dow=new Date(y,m,d).getDay();
+      let cls='c',txt='',extra='';
+      if(d>today||(e[1]==='E-022'&&d<16)){cls+=' future';}
+      else if(weeklyOff.includes(dow)){cls+=' off';}
+      else if(holidays[d]){cls+=' hol';txt='H';}
+      else{
+        const r=seeded(i+1,d);
+        if(r<0.86){cls+=' P';txt='P'; if(seeded(i+7,d)<0.08)extra+='<span class="hand"></span>'; if(seeded(i+3,d)<0.05)extra+='<span class="noout"></span>';}
+        else if(r<0.91){cls+=' LP';txt='L';}
+        else if(r<0.96){cls+=' LU';txt='L';unpaid++;}
+        else{cls+=' A';txt='A';unpaid++;}
+      }
+      if(e[1]==='E-014'&&d===3){cls='c LU sel';txt='L';extra='';unpaid=1;}
+      html+=`<td class="${cls}">${txt}${extra}</td>`;
+    }
+    html+=`<td class="sum">${unpaid?'<b>'+unpaid+'</b>':'0'}</td></tr>`;
+  });
+  html+=`<tr><td colspan="${days+2}" class="dim small" style="text-align:center;padding:10px">… 11 more</td></tr></tbody>`;
+  document.getElementById('grid').innerHTML=html;
+})();
+</script>
+</body>
+</html>
