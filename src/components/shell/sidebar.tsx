@@ -18,9 +18,13 @@ export function Sidebar({ lastBackupAt }: { lastBackupAt: string | null }) {
     : "never";
   return (
     <aside className="sticky top-0 flex h-screen flex-col bg-navy px-3 py-6 text-chalk">
-      <div className="px-3.5 pb-6">
-        <div className="text-[15px] font-semibold">NA Office HR</div>
-        <div className="mt-0.5 text-[11px] text-chalk/50">Internal · v0.1</div>
+      <div className="flex items-center gap-3 px-3.5 pb-6">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/icon.svg" alt="" width={34} height={34} className="shrink-0" />
+        <div>
+          <div className="text-[15px] font-semibold leading-tight">NA Office HR</div>
+          <div className="mt-0.5 text-[11px] text-chalk/50">Internal · v0.1</div>
+        </div>
       </div>
       <nav className="flex flex-col">
         {NAV.map((n) => (

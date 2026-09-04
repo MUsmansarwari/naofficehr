@@ -11,6 +11,8 @@ export default async function LoginPage({
   return (
     <main className="grid min-h-screen place-items-center bg-chalk p-6">
       <div className="w-full max-w-sm rounded-3xl bg-white p-8 shadow-card">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/icon.svg" alt="" width={48} height={48} className="mb-5" />
         <div className="text-xs uppercase tracking-wider text-navy-45">NA Office HR</div>
         <h1 className="mt-1 text-xl font-semibold">Sign in</h1>
         <p className="mt-1 text-navy-70">Internal tool — one password for the manager.</p>
