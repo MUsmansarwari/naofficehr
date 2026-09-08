@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NA Office HR
 
-## Getting Started
+Internal attendance, leave and payroll tool. One manager, several companies, PKR, no tax.
 
-First, run the development server:
+The rules it implements — salary divisor, probation, leave quota, the midnight-crossing
+shift, advances, payroll locking — are written down in [build-spec.md](build-spec.md).
+The locked visual reference is [design/ui-mockup.html](design/ui-mockup.html).
+
+## Running it locally
 
 ```bash
+npm install
+cp .env.example .env.local     # then edit it
+npm run db:migrate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`.env.local` needs:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | What it is |
+|---|---|
+| `ADMIN_PASSWORD` | The single password for the manager |
+| `SESSION_SECRET` | 32+ random characters, signs the session cookie |
+| `DATABASE_URL` | `file:local.db` locally, `libsql://…turso.io` in production |
+| `DATABASE_AUTH_TOKEN` | Turso token — production only |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Scripts: `npm test` (Vitest), `npm run typecheck`, `npm run lint`,
+`npm run db:generate` (new migration after a schema change), `npm run db:studio`.
 
-## Learn More
+## Where things live
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/lib/payroll/compute.ts     the payroll engine — pure, per-day, fully tested
+src/lib/attendance/resolve.ts  which day type a date is (weekly off → holiday → record → absent)
+src/lib/attendance/time.ts     shift dates for a shift that crosses midnight
+src/lib/advances/schedule.ts   installment projection
+src/lib/backup.ts              JSON export / restore
+src/db/schema.ts               every table
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Money is always integer **paisa**. Dates are always `YYYY-MM-DD` strings, months `YYYY-MM`,
+timestamps ISO UTC. A locked payslip is a snapshot and is never recomputed.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploying (Netlify + Turso, free)
 
-## Deploy on Vercel
+1. **Turso** — create a database, then take its URL and an auth token:
+   ```bash
+   turso db create na-office-hr
+   turso db show na-office-hr --url
+   turso db tokens create na-office-hr
+   ```
+2. **Migrate it once** from your machine:
+   ```bash
+   DATABASE_URL=libsql://… DATABASE_AUTH_TOKEN=… npm run db:migrate
+   ```
+3. **Netlify** — import this repo (build settings come from `netlify.toml`) and set the four
+   environment variables above. Use a strong `SESSION_SECRET`:
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+4. Sign in, add your company in **Settings**, then the employees.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The public check-in page lives at `/checkin/<company-slug>` — no login, PIN only.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Backups
+
+**Settings → Backup** downloads every table as one JSON file. Restore replaces everything,
+so the button stays disabled until you have downloaded the current data first — that
+download is the undo. The file carries a `schema_version`; a restore from a different
+version is refused rather than silently mangled.

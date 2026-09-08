@@ -1,11 +1,17 @@
 import { PageHeader } from "@/components/page-header";
+import { db, schema } from "@/db";
 import { Card, CardBody, CardHeader } from "@/components/card";
 import { getActiveCompany, listCompanies } from "@/lib/company";
+import { BackupCard } from "./backup-card";
 import { CompanyForm } from "./company-form";
 import { NewCompanyDialog } from "./new-company-dialog";
 
 export default async function SettingsPage() {
-  const [companies, active] = await Promise.all([listCompanies(), getActiveCompany()]);
+  const [companies, active, settingsRow] = await Promise.all([
+    listCompanies(),
+    getActiveCompany(),
+    db.select().from(schema.settings).limit(1),
+  ]);
 
   return (
     <>
@@ -37,10 +43,7 @@ export default async function SettingsPage() {
               ))}
             </ul>
           </Card>
-          <Card>
-            <CardHeader title="Backup" />
-            <CardBody className="text-navy-70">Download / restore — built in Phase 7.</CardBody>
-          </Card>
+          <BackupCard lastBackupAt={settingsRow[0]?.lastBackupAt ?? null} />
         </div>
       </div>
     </>

@@ -44,3 +44,6 @@ next-env.d.ts
 /local.db*
 /drizzle/meta/*.tmp
 !.env.example
+
+# netlify
+/.netlify
