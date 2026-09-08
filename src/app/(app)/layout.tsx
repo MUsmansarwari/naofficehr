@@ -12,11 +12,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const lastBackupAt = settingsRow[0]?.lastBackupAt ?? null;
 
   return (
-    <div className="grid min-h-screen grid-cols-[232px_1fr]">
+    <div className="app-shell grid min-h-screen grid-cols-[232px_1fr]">
       <Sidebar lastBackupAt={lastBackupAt} checkinSlug={active?.slug ?? null} />
       <div className="min-w-0">
         <Topbar companies={companies} active={active} />
-        <main className="px-8 pb-14 pt-5">{children}</main>
+        <main className="app-main px-8 pb-14 pt-5">{children}</main>
       </div>
     </div>
   );

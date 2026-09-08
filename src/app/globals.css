@@ -109,6 +109,29 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Printing a payslip: drop the app chrome and let the sheet fill the page. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff;
+  }
+  .app-shell {
+    display: block !important;
+  }
+  .app-main {
+    padding: 0 !important;
+  }
+  .print-sheet {
+    max-width: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

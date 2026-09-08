@@ -17,7 +17,7 @@ export function Sidebar({ lastBackupAt, checkinSlug }: { lastBackupAt: string | 
     ? formatDistanceToNowStrict(new Date(lastBackupAt), { addSuffix: true })
     : "never";
   return (
-    <aside className="sticky top-0 flex h-screen flex-col bg-navy px-3 py-6 text-chalk">
+    <aside className="no-print sticky top-0 flex h-screen flex-col bg-navy px-3 py-6 text-chalk">
       <div className="flex items-center gap-3 px-3.5 pb-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/icon.svg" alt="" width={34} height={34} className="shrink-0" />

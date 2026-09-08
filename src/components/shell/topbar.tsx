@@ -8,7 +8,7 @@ export function Topbar({ companies, active }: { companies: Company[]; active: Co
   const tz = active?.timezone ?? "Asia/Karachi";
   const now = formatInTimeZone(new Date(), tz, "EEEE, MMM d, yyyy · h:mm a");
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-4 bg-chalk px-8 pb-1 pt-5">
+    <header className="no-print sticky top-0 z-10 flex items-center gap-4 bg-chalk px-8 pb-1 pt-5">
       <CompanySwitcher companies={companies} activeId={active?.id ?? null} />
       <div className="text-navy-70">{now}</div>
       <div className="flex-1" />
