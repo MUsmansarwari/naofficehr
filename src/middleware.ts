@@ -29,7 +29,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  const isPublic = pathname === "/login" || pathname.startsWith("/checkin/");
+  const isPublic = pathname === "/login" || pathname === "/api/health" || pathname.startsWith("/checkin/");
   const authed = await valid(req.cookies.get(COOKIE)?.value);
 
   if (!isPublic && !authed) {
