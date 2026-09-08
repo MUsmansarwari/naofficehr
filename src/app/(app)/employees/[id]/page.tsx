@@ -1,10 +1,13 @@
 import { format } from "date-fns";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, CardBody, CardHeader } from "@/components/card";
 import { PageHeader } from "@/components/page-header";
 import { Tag } from "@/components/tag";
 import { requireActiveCompany } from "@/lib/company";
 import { parseYmd, todayIn } from "@/lib/dates";
+import { advancesForEmployee } from "@/lib/advances/queries";
+import { monthLabel } from "@/lib/advances/schedule";
 import { currentSalary, employeeHistory, getEmployee, hasNoRecords, salaryHistory, stageOn } from "@/lib/employees";
 import { fmtMoney, fmtRs } from "@/lib/money";
 import { DetailsCard } from "./details-card";
@@ -22,12 +25,14 @@ export default async function EmployeePage({ params }: { params: Promise<{ id: s
   const emp = await getEmployee(id);
   if (!emp || emp.companyId !== company.id) notFound();
 
-  const [salary, history, audit, deletable] = await Promise.all([
+  const [salary, history, audit, deletable, advances] = await Promise.all([
     currentSalary(id),
     salaryHistory(id),
     employeeHistory(id),
     hasNoRecords(id),
+    advancesForEmployee(id),
   ]);
+  const openAdvances = advances.filter((a) => a.advance.status !== "closed");
   const today = todayIn(company.timezone);
   const stage = stageOn(emp, today);
 
@@ -124,8 +129,40 @@ export default async function EmployeePage({ params }: { params: Promise<{ id: s
             </CardBody>
           </Card>
           <Card>
-            <CardHeader title="Advances" />
-            <CardBody className="text-navy-70">Phase 5.</CardBody>
+            <CardHeader
+              title="Advances"
+              right={
+                <Link href="/advances" className="text-xs text-navy-45 hover:underline">
+                  Manage →
+                </Link>
+              }
+            />
+            {openAdvances.length === 0 ? (
+              <CardBody className="text-navy-70">
+                {advances.length === 0 ? "None." : "Nothing outstanding."}
+              </CardBody>
+            ) : (
+              <ul className="divide-y divide-navy-06">
+                {openAdvances.map(({ advance, taken }) => (
+                  <li key={advance.id} className="space-y-1.5 px-5 py-4 text-sm">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-navy-70">Given {d(advance.givenOn)}</span>
+                      <b className="font-medium">{fmtMoney(advance.amount)}</b>
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-navy-70">
+                        {fmtMoney(advance.installmentAmount)} / month from {monthLabel(advance.startMonth)}
+                      </span>
+                      {advance.status === "paused" && <Tag variant="probation">Paused</Tag>}
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-navy-70">Recovered {fmtMoney(taken)} · remaining</span>
+                      <b className="font-medium">{fmtMoney(advance.remainingAmount)}</b>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Card>
         </div>
       </div>
