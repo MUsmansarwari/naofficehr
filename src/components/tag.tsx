@@ -4,6 +4,7 @@ const styles = {
   default: "bg-chalk text-navy-70",
   probation: "bg-soft text-navy",
   locked: "bg-navy text-chalk",
+  draft: "bg-soft text-navy",
   red: "bg-red-12 text-red",
 } as const;
 

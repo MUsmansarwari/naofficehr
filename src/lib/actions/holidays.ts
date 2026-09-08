@@ -5,15 +5,15 @@ import { revalidatePath } from "next/cache";
 import { db, schema } from "@/db";
 import { logAudit } from "@/lib/audit";
 import { requireActiveCompany } from "@/lib/company";
-import { str, type FormState } from "@/lib/form";
+import { formValues, str, type FormState } from "@/lib/form";
 import { PRESETS, type PresetKey } from "@/lib/holidays/presets";
 
 export async function addHoliday(_prev: FormState, fd: FormData): Promise<FormState> {
   const company = await requireActiveCompany();
   const date = str(fd, "date");
   const name = str(fd, "name");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Pick a date", fieldErrors: { date: "Required" } };
-  if (!name) return { error: "Name is required", fieldErrors: { name: "Required" } };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Pick a date", fieldErrors: { date: "Required" }, values: formValues(fd) };
+  if (!name) return { error: "Name is required", fieldErrors: { name: "Required" }, values: formValues(fd) };
   // Re-adding a date that was deactivated just reactivates it with the new name.
   const [row] = await db
     .insert(schema.holidays)

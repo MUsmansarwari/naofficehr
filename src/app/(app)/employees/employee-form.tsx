@@ -24,6 +24,8 @@ export function EmployeeForm({ company, employee, action, onCancel, onSaved, sub
     return r;
   }, {});
   const fe = state.fieldErrors ?? {};
+  // Re-fill from the rejected submission — React clears an uncontrolled form after its action.
+  const v = (name: string, fallback: string | null | undefined = "") => state.values?.[name] ?? fallback ?? "";
 
   const [joinDate, setJoinDate] = useState(employee?.joinDate ?? format(new Date(), "yyyy-MM-dd"));
   const [months, setMonths] = useState(employee?.probationMonths ?? company.defaultProbationMonths);
@@ -36,22 +38,22 @@ export function EmployeeForm({ company, employee, action, onCancel, onSaved, sub
 
       <section className="grid grid-cols-3 gap-4">
         <Field label="Code" htmlFor="code" error={fe.code}>
-          <Input id="code" name="code" defaultValue={employee?.code} placeholder="E-014" required />
+          <Input id="code" name="code" defaultValue={v("code", employee?.code)} placeholder="E-014" required />
         </Field>
         <Field label="Full name" htmlFor="name" error={fe.name} className="col-span-2">
-          <Input id="name" name="name" defaultValue={employee?.name} required />
+          <Input id="name" name="name" defaultValue={v("name", employee?.name)} required />
         </Field>
         <Field label="Designation" htmlFor="designation">
-          <Input id="designation" name="designation" defaultValue={employee?.designation ?? ""} />
+          <Input id="designation" name="designation" defaultValue={v("designation", employee?.designation)} />
         </Field>
         <Field label="Phone" htmlFor="phone">
-          <Input id="phone" name="phone" defaultValue={employee?.phone ?? ""} />
+          <Input id="phone" name="phone" defaultValue={v("phone", employee?.phone)} />
         </Field>
         <Field label="Email" htmlFor="email" error={fe.email}>
-          <Input id="email" name="email" type="email" defaultValue={employee?.email ?? ""} />
+          <Input id="email" name="email" type="email" defaultValue={v("email", employee?.email)} />
         </Field>
         <Field label="CNIC" htmlFor="cnic">
-          <Input id="cnic" name="cnic" defaultValue={employee?.cnic ?? ""} placeholder="35202-1234567-1" />
+          <Input id="cnic" name="cnic" defaultValue={v("cnic", employee?.cnic)} placeholder="35202-1234567-1" />
         </Field>
       </section>
 
@@ -65,18 +67,18 @@ export function EmployeeForm({ company, employee, action, onCancel, onSaved, sub
             <Input id="probationMonths" name="probationMonths" type="number" min={0} max={12} value={months} onChange={(e) => setMonths(Number(e.target.value))} />
           </Field>
           <Field label="Probation ends" htmlFor="probationEndDate" hint={autoEnd ? `Auto: ${autoEnd} — leave blank to use it` : undefined} error={fe.probationEndDate}>
-            <Input id="probationEndDate" name="probationEndDate" type="date" defaultValue={employee?.probationEndDate ?? ""} placeholder={autoEnd} />
+            <Input id="probationEndDate" name="probationEndDate" type="date" defaultValue={v("probationEndDate", employee?.probationEndDate)} placeholder={autoEnd} />
           </Field>
           {isNew && (
             <Field label={`Monthly salary (${company.currency})`} htmlFor="monthlySalary" error={fe.monthlySalary}>
-              <Input id="monthlySalary" name="monthlySalary" inputMode="numeric" placeholder="150000" required />
+              <Input id="monthlySalary" name="monthlySalary" inputMode="numeric" defaultValue={v("monthlySalary")} placeholder="150000" required />
             </Field>
           )}
           <Field label="Paid leave / year" htmlFor="leaveQuotaAnnual" hint={`Blank = company default (${company.defaultLeaveQuota})`}>
-            <Input id="leaveQuotaAnnual" name="leaveQuotaAnnual" type="number" min={0} max={60} defaultValue={employee?.leaveQuotaAnnual ?? ""} />
+            <Input id="leaveQuotaAnnual" name="leaveQuotaAnnual" type="number" min={0} max={60} defaultValue={v("leaveQuotaAnnual", employee?.leaveQuotaAnnual?.toString())} />
           </Field>
           <Field label="Check-in PIN" htmlFor="checkinPin" error={fe.checkinPin} hint="4 digits, unique in company">
-            <Input id="checkinPin" name="checkinPin" inputMode="numeric" pattern="\d{4}" maxLength={4} defaultValue={employee?.checkinPin ?? ""} />
+            <Input id="checkinPin" name="checkinPin" inputMode="numeric" pattern="\d{4}" maxLength={4} defaultValue={v("checkinPin", employee?.checkinPin)} />
           </Field>
         </div>
       </section>
@@ -85,13 +87,13 @@ export function EmployeeForm({ company, employee, action, onCancel, onSaved, sub
         <h3 className="mb-3 text-[13px] font-medium text-navy-70">Bank</h3>
         <div className="grid grid-cols-3 gap-4">
           <Field label="Bank name" htmlFor="bankName">
-            <Input id="bankName" name="bankName" defaultValue={employee?.bankName ?? ""} />
+            <Input id="bankName" name="bankName" defaultValue={v("bankName", employee?.bankName)} />
           </Field>
           <Field label="Account number" htmlFor="accountNumber">
-            <Input id="accountNumber" name="accountNumber" defaultValue={employee?.accountNumber ?? ""} />
+            <Input id="accountNumber" name="accountNumber" defaultValue={v("accountNumber", employee?.accountNumber)} />
           </Field>
           <Field label="Notes" htmlFor="notes">
-            <Input id="notes" name="notes" defaultValue={employee?.notes ?? ""} />
+            <Input id="notes" name="notes" defaultValue={v("notes", employee?.notes)} />
           </Field>
         </div>
       </section>

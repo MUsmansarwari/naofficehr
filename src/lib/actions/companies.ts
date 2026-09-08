@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { logAudit } from "@/lib/audit";
-import { fromZod, str, type FormState } from "@/lib/form";
+import { formValues, fromZod, str, type FormState } from "@/lib/form";
 import { switchCompany } from "./session";
 
 const hhmm = z.string().regex(/^\d{2}:\d{2}$/, "Use hh:mm");
@@ -47,13 +47,13 @@ function parseCompany(fd: FormData) {
 
 export async function createCompany(_prev: FormState, fd: FormData): Promise<FormState> {
   const parsed = parseCompany(fd);
-  if (!parsed.success) return fromZod(parsed.error);
+  if (!parsed.success) return fromZod(parsed.error, fd);
   try {
     const [row] = await db.insert(schema.companies).values(parsed.data).returning();
     await logAudit({ entityType: "company", entityId: row.id, action: "create", after: row });
     await switchCompany(row.id);
   } catch (e) {
-    if (String(e).includes("UNIQUE")) return { fieldErrors: { slug: "Slug already used" }, error: "Slug already used" };
+    if (String(e).includes("UNIQUE")) return { fieldErrors: { slug: "Slug already used" }, error: "Slug already used", values: formValues(fd) };
     throw e;
   }
   revalidatePath("/", "layout");
@@ -62,14 +62,14 @@ export async function createCompany(_prev: FormState, fd: FormData): Promise<For
 
 export async function updateCompany(id: number, _prev: FormState, fd: FormData): Promise<FormState> {
   const parsed = parseCompany(fd);
-  if (!parsed.success) return fromZod(parsed.error);
+  if (!parsed.success) return fromZod(parsed.error, fd);
   const [before] = await db.select().from(schema.companies).where(eq(schema.companies.id, id));
-  if (!before) return { error: "Company not found" };
+  if (!before) return { error: "Company not found", values: formValues(fd) };
   try {
     const [after] = await db.update(schema.companies).set(parsed.data).where(eq(schema.companies.id, id)).returning();
     await logAudit({ entityType: "company", entityId: id, action: "update", before, after });
   } catch (e) {
-    if (String(e).includes("UNIQUE")) return { fieldErrors: { slug: "Slug already used" }, error: "Slug already used" };
+    if (String(e).includes("UNIQUE")) return { fieldErrors: { slug: "Slug already used" }, error: "Slug already used", values: formValues(fd) };
     throw e;
   }
   revalidatePath("/", "layout");

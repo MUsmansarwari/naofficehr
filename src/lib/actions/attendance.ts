@@ -74,7 +74,7 @@ export async function saveAttendance(edits: AttendanceEdit[]): Promise<{ ok: tru
           } else {
             await tx.delete(schema.attendance).where(eq(schema.attendance.id, existing.id));
           }
-          await logAudit({ entityType: "attendance", entityId: existing.id, action: "delete", before: existing, note: "Override cleared" });
+          await logAudit({ entityType: "attendance", entityId: existing.id, action: "delete", before: existing, note: "Override cleared" }, tx);
           saved++;
           continue;
         }
@@ -92,7 +92,7 @@ export async function saveAttendance(edits: AttendanceEdit[]): Promise<{ ok: tru
             })
             .where(eq(schema.attendance.id, existing.id))
             .returning();
-          await logAudit({ entityType: "attendance", entityId: existing.id, action: "override", before: existing, after, note: e.note });
+          await logAudit({ entityType: "attendance", entityId: existing.id, action: "override", before: existing, after, note: e.note }, tx);
         } else {
           const [after] = await tx
             .insert(schema.attendance)
@@ -108,7 +108,7 @@ export async function saveAttendance(edits: AttendanceEdit[]): Promise<{ ok: tru
               updatedAt: nowIso,
             })
             .returning();
-          await logAudit({ entityType: "attendance", entityId: after.id, action: "override", after, note: e.note });
+          await logAudit({ entityType: "attendance", entityId: after.id, action: "override", after, note: e.note }, tx);
         }
         saved++;
       }

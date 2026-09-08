@@ -16,6 +16,7 @@ export function SalaryDialog({ employeeId, currency }: { employeeId: number; cur
     if (state.ok) setOpen(false);
   }, [state.ok]);
   const fe = state.fieldErrors ?? {};
+  const v = (name: string, fallback = "") => state.values?.[name] ?? fallback;
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button variant="outline" size="sm" />}>Change salary</DialogTrigger>
@@ -27,13 +28,13 @@ export function SalaryDialog({ employeeId, currency }: { employeeId: number; cur
         <form action={action} className="space-y-4">
           <FormError message={state.error} />
           <Field label={`New monthly salary (${currency})`} htmlFor="monthlySalary" error={fe.monthlySalary}>
-            <Input id="monthlySalary" name="monthlySalary" inputMode="numeric" required autoFocus />
+            <Input id="monthlySalary" name="monthlySalary" inputMode="numeric" defaultValue={v("monthlySalary")} required autoFocus />
           </Field>
           <Field label="Effective from" htmlFor="effectiveFrom" error={fe.effectiveFrom} hint="Usually the 1st of a month">
-            <Input id="effectiveFrom" name="effectiveFrom" type="date" defaultValue={format(new Date(), "yyyy-MM-01")} required />
+            <Input id="effectiveFrom" name="effectiveFrom" type="date" defaultValue={v("effectiveFrom", format(new Date(), "yyyy-MM-01"))} required />
           </Field>
           <Field label="Note" htmlFor="note">
-            <Input id="note" name="note" placeholder="Annual increment" />
+            <Input id="note" name="note" defaultValue={v("note")} placeholder="Annual increment" />
           </Field>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
