@@ -12,7 +12,7 @@ const NAV = [
   { href: "/settings", label: "Settings" },
 ] as const;
 
-export function Sidebar({ lastBackupAt }: { lastBackupAt: string | null }) {
+export function Sidebar({ lastBackupAt, checkinSlug }: { lastBackupAt: string | null; checkinSlug: string | null }) {
   const backup = lastBackupAt
     ? formatDistanceToNowStrict(new Date(lastBackupAt), { addSuffix: true })
     : "never";
@@ -33,7 +33,7 @@ export function Sidebar({ lastBackupAt }: { lastBackupAt: string | null }) {
           </NavLink>
         ))}
         <div className="mx-3.5 my-3.5 h-px bg-chalk/10" />
-        <NavLink href="/checkin" external>
+        <NavLink href={checkinSlug ? `/checkin/${checkinSlug}` : "/checkin"} external>
           Check-in page ↗
         </NavLink>
       </nav>

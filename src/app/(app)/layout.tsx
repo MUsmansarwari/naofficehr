@@ -13,7 +13,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="grid min-h-screen grid-cols-[232px_1fr]">
-      <Sidebar lastBackupAt={lastBackupAt} />
+      <Sidebar lastBackupAt={lastBackupAt} checkinSlug={active?.slug ?? null} />
       <div className="min-w-0">
         <Topbar companies={companies} active={active} />
         <main className="px-8 pb-14 pt-5">{children}</main>
