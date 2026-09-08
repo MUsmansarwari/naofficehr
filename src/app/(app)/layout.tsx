@@ -3,6 +3,9 @@ import { Topbar } from "@/components/shell/topbar";
 import { getActiveCompany, listCompanies } from "@/lib/company";
 import { db, schema } from "@/db";
 
+// Every page in here reads the database per request — never at build time.
+export const dynamic = "force-dynamic";
+
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const [companies, active, settingsRow] = await Promise.all([
     listCompanies(),

@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { exportAll, markBackupTaken } from "@/lib/backup";
 
+export const dynamic = "force-dynamic";
+
 /** One-click backup download (build-spec §6). Auth comes from the middleware. */
 export async function GET() {
   const file = await exportAll();

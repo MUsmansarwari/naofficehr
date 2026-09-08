@@ -3,6 +3,8 @@ import { getActiveCompany } from "@/lib/company";
 import { toRupees } from "@/lib/money";
 import { attendanceSummary, salaryRegister, toCsv } from "@/lib/reports";
 
+export const dynamic = "force-dynamic";
+
 /**
  * CSV export for the reports page. Auth is enforced by the middleware, which
  * only lets /login and /checkin/* through unauthenticated.
