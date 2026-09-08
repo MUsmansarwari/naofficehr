@@ -60,6 +60,10 @@ timestamps ISO UTC. A locked payslip is a snapshot and is never recomputed.
    ```
 4. Sign in, add your company in **Settings**, then the employees.
 
+`/api/health` is public and reports whether each environment variable is set and
+whether the database answers — check it first when a deploy misbehaves. It never
+echoes a secret.
+
 The public check-in page lives at `/checkin/<company-slug>` — no login, PIN only.
 
 ## Backups
