@@ -3,7 +3,7 @@ import { HeaderSkeleton, Skeleton } from "@/components/skeleton";
 export default function Loading() {
   return (
     <>
-      <HeaderSkeleton actions={4} />
+      <HeaderSkeleton actions={3} back />
       <div className="mx-auto max-w-3xl rounded-2xl bg-white px-11 py-10 shadow-card">
         <div className="mb-5 flex items-start justify-between border-b-2 border-navy-12 pb-4">
           <div>

@@ -3,7 +3,7 @@ import { CardSkeleton, HeaderSkeleton, Skeleton, TableSkeleton } from "@/compone
 export default function Loading() {
   return (
     <>
-      <HeaderSkeleton actions={2} />
+      <HeaderSkeleton actions={2} back />
       <div className="grid grid-cols-[2fr_1fr] gap-4">
         <div className="grid content-start gap-4">
           <CardSkeleton>

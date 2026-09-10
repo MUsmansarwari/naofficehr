@@ -15,10 +15,11 @@ export function Spinner({ className }: { className?: string }) {
 }
 
 /** Page title + subtitle placeholder, matching PageHeader's spacing. */
-export function HeaderSkeleton({ actions = 1 }: { actions?: number }) {
+export function HeaderSkeleton({ actions = 1, back }: { actions?: number; back?: boolean }) {
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
       <div>
+        {back && <Skeleton className="mb-2.5 h-3 w-24" />}
         <Skeleton className="h-7 w-56" />
         <Skeleton className="mt-2.5 h-4 w-80" />
       </div>

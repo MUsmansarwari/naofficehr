@@ -36,6 +36,7 @@ export default async function PayslipPage({ params }: { params: Promise<{ id: st
     <>
       <div className="no-print">
         <PageHeader
+          back={{ href: `/payroll?month=${ym}`, label: `Payroll · ${monthLabel}` }}
           title="Payslip"
           subtitle={
             <>
@@ -45,9 +46,6 @@ export default async function PayslipPage({ params }: { params: Promise<{ id: st
           }
           actions={
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="border-0 bg-white shadow-card" nativeButton={false} render={<Link href={`/payroll?month=${ym}`} />}>
-                ‹ Payroll
-              </Button>
               {prev && (
                 <Button variant="outline" size="sm" className="border-0 bg-white shadow-card" nativeButton={false} render={<Link href={`/payslips/${prev.id}`} />}>
                   Previous

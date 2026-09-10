@@ -8,7 +8,11 @@ export default async function NewEmployeePage() {
   const company = await requireActiveCompany();
   return (
     <>
-      <PageHeader title="Add employee" subtitle={company.name} />
+      <PageHeader
+        title="Add employee"
+        subtitle={company.name}
+        back={{ href: "/employees", label: "Employees" }}
+      />
       <Card className="max-w-4xl">
         <CardBody>
           <EmployeeForm company={company} action={createEmployee} />

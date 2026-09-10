@@ -39,6 +39,7 @@ export default async function EmployeePage({ params }: { params: Promise<{ id: s
   return (
     <>
       <PageHeader
+        back={{ href: "/employees", label: "Employees" }}
         title={
           <>
             {emp.name} <span className="ml-1 text-base font-normal text-navy-45">{emp.code}</span>

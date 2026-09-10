@@ -3,7 +3,7 @@ import { CardSkeleton, HeaderSkeleton, Skeleton } from "@/components/skeleton";
 export default function Loading() {
   return (
     <>
-      <HeaderSkeleton actions={0} />
+      <HeaderSkeleton actions={0} back />
       <CardSkeleton className="max-w-4xl">
         <div className="space-y-6 px-5 py-5">
           {[6, 6, 3].map((count, s) => (
