@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useActionState, useEffect, useState } from "react";
 import { Field, FormError, NativeSelect } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { createAdvance } from "@/lib/actions/advances";
@@ -106,6 +107,7 @@ export function NewAdvanceDialog({ candidates, currency }: { candidates: Candida
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
+              {pending && <Spinner />}
               {pending ? "Saving…" : "Give advance"}
             </Button>
           </div>

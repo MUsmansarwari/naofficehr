@@ -3,6 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { Field, FormError } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import type { Payslip } from "@/db/schema";
@@ -58,6 +59,7 @@ export function AdjustDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
+              {pending && <Spinner />}
               {pending ? "Saving…" : "Save"}
             </Button>
           </div>

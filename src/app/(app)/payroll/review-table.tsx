@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { PendingLink } from "@/components/pending-link";
 import { useState } from "react";
 import { Tag } from "@/components/tag";
 import { Button } from "@/components/ui/button";
@@ -93,9 +93,9 @@ export function ReviewTable({ rows, locked, total }: { rows: Row[]; locked: bool
                         Adjust
                       </Button>
                     )}
-                    <Link href={`/payslips/${p.id}`} className="ml-2 text-xs text-navy-45 hover:underline">
+                    <PendingLink href={`/payslips/${p.id}`} className="ml-2 text-xs text-navy-45 hover:underline">
                       Payslip
-                    </Link>
+                    </PendingLink>
                   </td>
                 </tr>
               );

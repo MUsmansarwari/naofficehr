@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { Field, FormError } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Input } from "@/components/ui/input";
 import { addHoliday } from "@/lib/actions/holidays";
 import type { FormState } from "@/lib/form";
@@ -25,6 +26,7 @@ export function AddHolidayForm({ year }: { year: number }) {
         <Input id="name" name="name" defaultValue={v("name")} placeholder="Eid ul-Fitr" required />
       </Field>
       <Button type="submit" disabled={pending} className="w-full">
+        {pending && <Spinner />}
         {pending ? "Adding…" : "Add holiday"}
       </Button>
     </form>

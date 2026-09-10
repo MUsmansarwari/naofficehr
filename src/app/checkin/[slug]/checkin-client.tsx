@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { checkIn, checkOut, lookupPin, manualTime, type CheckinResult } from "@/lib/actions/checkin";
 import { cn } from "@/lib/utils";
 
@@ -98,7 +99,8 @@ export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
             </button>
           ))}
         </div>
-        <div className={cn("mt-4 min-h-5 text-sm", error ? "text-red" : "text-navy-45")}>
+        <div className={cn("mt-4 flex min-h-5 items-center justify-center gap-1.5 text-sm", error ? "text-red" : "text-navy-45")}>
+          {pending && <Spinner />}
           {error ?? (pending ? "Checking…" : `Shift ${shift}`)}
         </div>
       </Card>
@@ -138,10 +140,12 @@ export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
         <div className="rounded-[14px] bg-chalk py-5 text-lg font-medium">Done for today</div>
       ) : !t.checkIn ? (
         <Button className="h-16 w-full rounded-[14px] text-[17px]" disabled={pending} onClick={() => start(async () => apply(await checkIn(slug, pin)))}>
+          {pending && <Spinner className="size-5" />}
           Check in now
         </Button>
       ) : (
         <Button variant="secondary" className="h-16 w-full rounded-[14px] text-[17px]" disabled={pending} onClick={() => start(async () => apply(await checkOut(slug, pin)))}>
+          {pending && <Spinner className="size-5" />}
           Check out now
         </Button>
       )}
@@ -195,6 +199,7 @@ function ManualForm({
         </select>
       </div>
       <Button type="submit" variant="secondary" className="h-12 w-full rounded-[12px] text-base" disabled={pending || !time}>
+        {pending && <Spinner />}
         Save {kind === "in" ? "check-in" : "check-out"}
       </Button>
       <button type="button" className="mt-3 block w-full text-center text-sm text-navy-45" onClick={onCancel}>

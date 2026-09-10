@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { addMonths, format } from "date-fns";
+import { format } from "date-fns";
 import { Card, CardHeader } from "@/components/card";
+import { MonthNav } from "@/components/month-nav";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { getActiveCompany } from "@/lib/company";
@@ -16,8 +17,6 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
   const today = todayIn(company.timezone);
   const ym = /^\d{4}-\d{2}$/.test(raw ?? "") ? (raw as string) : today.slice(0, 7);
   const first = parseYmd(`${ym}-01`);
-  const prev = format(addMonths(first, -1), "yyyy-MM");
-  const next = format(addMonths(first, 1), "yyyy-MM");
 
   const [register, summary] = await Promise.all([salaryRegister(company.id, ym), attendanceSummary(company, ym)]);
   const total = register.reduce(
@@ -36,15 +35,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         title="Reports"
         subtitle={`${company.name} · ${format(first, "MMMM yyyy")}`}
         actions={
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="border-0 bg-white shadow-card" nativeButton={false} render={<Link href={`/reports?month=${prev}`} />}>
-              ‹
-            </Button>
-            <div className="min-w-40 rounded-full bg-white px-4 py-2 text-center font-medium shadow-card">{format(first, "MMMM yyyy")}</div>
-            <Button variant="outline" size="sm" className="border-0 bg-white shadow-card" nativeButton={false} render={<Link href={`/reports?month=${next}`} />}>
-              ›
-            </Button>
-          </div>
+          <MonthNav path="/reports" ym={ym} />
         }
       />
 

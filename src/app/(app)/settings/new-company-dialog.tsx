@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { FormError } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { createCompany } from "@/lib/actions/companies";
 import type { FormState } from "@/lib/form";
@@ -29,6 +30,7 @@ export function NewCompanyDialog() {
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
+              {pending && <Spinner />}
               {pending ? "Creating…" : "Create company"}
             </Button>
           </div>

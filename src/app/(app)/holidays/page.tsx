@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { format } from "date-fns";
 import { and, asc, eq, like } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { Card, CardHeader } from "@/components/card";
+import { FilterPills } from "@/components/filter-pills";
 import { PageHeader } from "@/components/page-header";
 import { Tag } from "@/components/tag";
 import { getActiveCompany } from "@/lib/company";
@@ -37,13 +37,10 @@ export default async function HolidaysPage({ searchParams }: { searchParams: Pro
         subtitle={`${company.name} · ${active} paid holiday${active === 1 ? "" : "s"} in ${year}`}
         actions={<ImportPresets year={year} />}
       />
-      <div className="mb-4 inline-flex gap-0.5 rounded-full bg-white p-1 shadow-card">
-        {years.map((y) => (
-          <Link key={y} href={`/holidays?year=${y}`} className={cn("rounded-full px-4 py-1.5 text-[13px] font-medium text-navy-70", y === year && "bg-navy text-chalk")}>
-            {y}
-          </Link>
-        ))}
-      </div>
+      <FilterPills
+        current={String(year)}
+        items={years.map((y) => ({ key: String(y), label: String(y), href: `/holidays?year=${y}` }))}
+      />
 
       <div className="grid grid-cols-[2fr_1fr] gap-4">
         <Card>

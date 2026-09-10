@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login, type LoginState } from "@/lib/actions/session";
@@ -17,6 +18,7 @@ export function LoginForm({ next }: { next: string }) {
       </div>
       {state.error && <p className="text-sm text-red">{state.error}</p>}
       <Button type="submit" disabled={pending} className="h-10 w-full">
+        {pending && <Spinner />}
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>

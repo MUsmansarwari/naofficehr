@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { Field, FormError } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import type { Advance } from "@/db/schema";
@@ -134,6 +135,7 @@ export function AdvanceActions({
                     Cancel
                   </Button>
                   <Button type="submit" disabled={saving}>
+                    {saving && <Spinner />}
                     {saving ? "Saving…" : "Save"}
                   </Button>
                 </div>

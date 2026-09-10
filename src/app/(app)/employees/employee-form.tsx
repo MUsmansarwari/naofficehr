@@ -4,6 +4,7 @@ import { addMonths, format } from "date-fns";
 import { useActionState, useState } from "react";
 import { Field, FormError } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Input } from "@/components/ui/input";
 import type { Company, Employee } from "@/db/schema";
 import type { FormState } from "@/lib/form";
@@ -105,6 +106,7 @@ export function EmployeeForm({ company, employee, action, onCancel, onSaved, sub
           </Button>
         )}
         <Button type="submit" disabled={pending}>
+          {pending && <Spinner />}
           {pending ? "Saving…" : (submitLabel ?? (isNew ? "Add employee" : "Save"))}
         </Button>
       </div>

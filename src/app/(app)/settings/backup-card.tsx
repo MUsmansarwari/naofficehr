@@ -4,6 +4,7 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { useRef, useState, useTransition } from "react";
 import { Card, CardBody, CardHeader } from "@/components/card";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { restoreBackup } from "@/lib/actions/backup";
 
@@ -124,6 +125,7 @@ export function BackupCard({ lastBackupAt }: { lastBackupAt: string | null }) {
                 })
               }
             >
+              {pending && <Spinner />}
               {pending ? "Restoring…" : "Replace everything"}
             </Button>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { generateDraft, lockRun, unlockRun } from "@/lib/actions/payroll";
@@ -31,10 +32,12 @@ export function RunActions({ ym, exists, locked }: { ym: string; exists: boolean
       ) : (
         <>
           <Button variant="outline" className="border-0 bg-white shadow-card" disabled={pending} onClick={() => run(() => generateDraft(ym))}>
+            {pending && <Spinner />}
             {pending ? "Working…" : exists ? "Regenerate draft" : "Generate draft"}
           </Button>
           {exists && (
             <Button variant="secondary" disabled={pending} onClick={() => run(() => lockRun(ym))}>
+              {pending && <Spinner />}
               Lock payroll
             </Button>
           )}
@@ -56,6 +59,7 @@ export function RunActions({ ym, exists, locked }: { ym: string; exists: boolean
               Cancel
             </Button>
             <Button disabled={pending || !reason.trim()} onClick={() => run(() => unlockRun(ym, reason))}>
+              {pending && <Spinner />}
               Unlock
             </Button>
           </div>

@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useActionState, useEffect, useState } from "react";
 import { Field, FormError } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { changeSalary } from "@/lib/actions/employees";
@@ -41,6 +42,7 @@ export function SalaryDialog({ employeeId, currency }: { employeeId: number; cur
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
+              {pending && <Spinner />}
               {pending ? "Saving…" : "Save"}
             </Button>
           </div>

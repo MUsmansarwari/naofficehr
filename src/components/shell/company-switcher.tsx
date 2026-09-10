@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/skeleton";
 import { useTransition } from "react";
 import { ChevronDown } from "lucide-react";
 import type { Company } from "@/db/schema";
@@ -34,7 +35,7 @@ export function CompanySwitcher({
         className="inline-flex items-center gap-2.5 rounded-full bg-white py-2 pl-4 pr-3.5 font-medium shadow-card outline-none focus-visible:ring-2 focus-visible:ring-amber"
       >
         {active?.name ?? "Select company"}
-        <ChevronDown className="size-3.5 text-navy-45" />
+        {pending ? <Spinner className="text-navy-45" /> : <ChevronDown className="size-3.5 text-navy-45" />}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-52">
         {companies.map((c) => (

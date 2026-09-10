@@ -5,6 +5,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import { useMemo, useState, useTransition } from "react";
 import { Tag } from "@/components/tag";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import type { AttendanceStatus } from "@/db/schema";
 import { saveAttendance, type AttendanceEdit } from "@/lib/actions/attendance";
 import type { GridCell, GridDay, GridRow } from "@/lib/attendance/queries";
@@ -116,6 +117,7 @@ export function AttendanceGrid({ company, days, rows, today }: Props) {
                 Discard
               </Button>
               <Button size="sm" disabled={pending} onClick={save}>
+                {pending && <Spinner />}
                 {pending ? "Saving…" : `Save changes · ${editCount}`}
               </Button>
             </>

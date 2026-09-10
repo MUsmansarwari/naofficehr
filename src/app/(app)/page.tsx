@@ -2,6 +2,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { Card, CardBody, CardHeader } from "@/components/card";
 import { PageHeader } from "@/components/page-header";
+import { PendingLink } from "@/components/pending-link";
 import { Tag } from "@/components/tag";
 import { Button } from "@/components/ui/button";
 import { db, schema } from "@/db";
@@ -133,9 +134,9 @@ export default async function DashboardPage() {
                 return (
                   <tr key={t.id}>
                     <td className="px-5 py-3">
-                      <Link href={`/employees/${t.id}`} className="font-medium hover:underline">
+                      <PendingLink href={`/employees/${t.id}`} className="font-medium hover:underline">
                         {t.name}
-                      </Link>
+                      </PendingLink>
                       <span className="ml-2 text-xs text-navy-45">{t.code}</span>
                       {t.onProbation && (
                         <Tag variant="probation" className="ml-2">
@@ -177,9 +178,9 @@ export default async function DashboardPage() {
                   {data.probationSoon.map((p) => (
                     <tr key={p.id}>
                       <td className="px-5 py-3">
-                        <Link href={`/employees/${p.id}`} className="font-medium hover:underline">
+                        <PendingLink href={`/employees/${p.id}`} className="font-medium hover:underline">
                           {p.name}
-                        </Link>
+                        </PendingLink>
                       </td>
                       <td className="px-3 py-3 text-right">{format(parseYmd(p.endDate), "MMM d")}</td>
                       <td className="px-5 py-3 text-right text-navy-45">

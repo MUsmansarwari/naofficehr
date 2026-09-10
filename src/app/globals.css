@@ -109,6 +109,33 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Loading placeholders. A slow sweep, not a throb — it should read as "working",
+   not as something blinking for attention. */
+.na-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--navy-06);
+}
+.na-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: na-sweep 1.5s ease-in-out infinite;
+}
+@keyframes na-sweep {
+  100% {
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .na-skeleton::after {
+    animation: none;
+  }
+}
+
 /* Printing a payslip: drop the app chrome and let the sheet fill the page. */
 @media print {
   .no-print {

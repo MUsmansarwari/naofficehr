@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { Card } from "@/components/card";
+import { FilterPills } from "@/components/filter-pills";
+import { PendingLink } from "@/components/pending-link";
 import { PageHeader } from "@/components/page-header";
 import { Tag } from "@/components/tag";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,6 @@ import { getActiveCompany } from "@/lib/company";
 import { parseYmd, todayIn } from "@/lib/dates";
 import { listEmployees, stageOn } from "@/lib/employees";
 import { fmtMoney } from "@/lib/money";
-import { cn } from "@/lib/utils";
 
 const FILTERS = [
   ["active", "Active"],
@@ -37,17 +38,10 @@ export default async function EmployeesPage({ searchParams }: { searchParams: Pr
           </Button>
         }
       />
-      <div className="mb-4 inline-flex gap-0.5 rounded-full bg-white p-1 shadow-card">
-        {FILTERS.map(([k, label]) => (
-          <Link
-            key={k}
-            href={k === "active" ? "/employees" : `/employees?status=${k}`}
-            className={cn("rounded-full px-4 py-1.5 text-[13px] font-medium text-navy-70", k === status && "bg-navy text-chalk")}
-          >
-            {label}
-          </Link>
-        ))}
-      </div>
+      <FilterPills
+        current={status}
+        items={FILTERS.map(([k, label]) => ({ key: k, label, href: k === "active" ? "/employees" : `/employees?status=${k}` }))}
+      />
 
       <Card>
         <table className="w-full">
@@ -74,9 +68,9 @@ export default async function EmployeesPage({ searchParams }: { searchParams: Pr
               return (
                 <tr key={e.id} className="hover:bg-chalk/60">
                   <td className="px-5 py-3">
-                    <Link href={`/employees/${e.id}`} className="font-medium hover:underline">
+                    <PendingLink href={`/employees/${e.id}`} className="font-medium hover:underline">
                       {e.name}
-                    </Link>
+                    </PendingLink>
                     <span className="ml-2 text-xs text-navy-45">{e.code}</span>
                   </td>
                   <td className="px-3 py-3 text-navy-70">{e.designation ?? "—"}</td>

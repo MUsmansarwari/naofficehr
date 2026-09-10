@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { Card, CardBody, CardHeader } from "@/components/card";
 import { FormError, FormOk } from "@/components/form/field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/skeleton";
 import type { Company } from "@/db/schema";
 import { updateCompany } from "@/lib/actions/companies";
 import type { FormState } from "@/lib/form";
@@ -20,6 +21,7 @@ export function CompanyForm({ company }: { company: Company }) {
             <div className="flex items-center gap-3">
               <FormOk show={state.ok} />
               <Button type="submit" disabled={pending}>
+                {pending && <Spinner />}
                 {pending ? "Saving…" : "Save changes"}
               </Button>
             </div>
