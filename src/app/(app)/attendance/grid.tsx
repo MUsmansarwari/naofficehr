@@ -60,11 +60,20 @@ export function AttendanceGrid({ company, days, rows, today }: Props) {
     if (!paint || cell.status === "skip") return;
     setEdit(row, cell, { status: paint });
   };
-  const paintRow = (row: GridRow) => row.cells.forEach((c) => c.status !== "skip" && c.status !== "future" && setEdit(row, c, { status: paint! }));
+  /**
+   * Bulk mark never turns a weekly off or a holiday into a working day by
+   * accident — those only change when that is the colour being painted.
+   */
+  const bulkPaintable = (cell: GridCell) => {
+    if (cell.status === "skip" || cell.status === "future") return false;
+    const isOffDay = cell.status === "weekly_off" || cell.status === "public_holiday";
+    return !isOffDay || paint === "weekly_off" || paint === "public_holiday";
+  };
+  const paintRow = (row: GridRow) => row.cells.forEach((c) => bulkPaintable(c) && setEdit(row, c, { status: paint! }));
   const paintColumn = (date: string) =>
     rows.forEach((r) => {
       const c = r.cells.find((x) => x.date === date)!;
-      if (c.status !== "skip" && c.status !== "future") setEdit(r, c, { status: paint! });
+      if (bulkPaintable(c)) setEdit(r, c, { status: paint! });
     });
 
   const unpaidFor = (row: GridRow) => row.cells.filter((c) => ["absent", "leave_unpaid"].includes(effective(row, c))).length;
