@@ -24,9 +24,15 @@ export type AttendanceEdit = z.infer<typeof editSchema>;
 function parseTime(v: string | undefined, shiftDate: string, company: { timezone: string; shiftStart: string; shiftEnd: string }) {
   if (v === undefined) return undefined;
   if (v.trim() === "") return null;
-  const m = /^(\d{1,2}:\d{2})\s*(AM|PM)$/i.exec(v.trim());
-  if (!m) throw new Error(`Time "${v}" must look like 8:04 PM`);
-  return instantOnShiftDate(shiftDate, to24h(m[1], m[2].toUpperCase() as "AM" | "PM"), company).toISOString();
+  // Accepts "8:04 PM", "8.04pm", "804 PM" — same lenient rules as the check-in page.
+  const m = /^(.*?)\s*(am|pm)$/i.exec(v.trim());
+  const ampm = (m ? m[2].toUpperCase() : "AM") as "AM" | "PM";
+  const body = m ? m[1] : v.trim();
+  try {
+    return instantOnShiftDate(shiftDate, to24h(body, ampm), company).toISOString();
+  } catch (err) {
+    throw new Error(`Time "${v}": ${err instanceof Error ? err.message : "invalid"} — try 8:04 PM`);
+  }
 }
 
 /** Batch save from the grid (build-spec §8 #5: one call, not one per cell). */

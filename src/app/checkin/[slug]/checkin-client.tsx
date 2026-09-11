@@ -4,10 +4,12 @@ import { useEffect, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/skeleton";
 import { checkIn, checkOut, lookupPin, manualTime, type CheckinResult } from "@/lib/actions/checkin";
+import { looseTimePreview } from "@/lib/attendance/time";
 import { cn } from "@/lib/utils";
 
 type Props = { slug: string; companyName: string; enabled: boolean; shift: string };
 type Ok = Extract<CheckinResult, { ok: true }>;
+type Busy = "lookup" | "in" | "out" | "manual" | null;
 
 export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
   const [pin, setPin] = useState("");
@@ -15,28 +17,34 @@ export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [manual, setManual] = useState<"in" | "out" | null>(null);
+  const [busy, setBusy] = useState<Busy>(null);
   const [pending, start] = useTransition();
 
-  const apply = (r: CheckinResult) => {
-    if (r.ok) {
-      setSession(r);
-      setError(null);
-      setNotice(r.message ?? null);
-      setManual(null);
-    } else {
-      setError(r.error);
-      if (r.locked) setPin("");
-    }
+  const run = (what: Exclude<Busy, null>, fn: () => Promise<CheckinResult>) => {
+    setBusy(what);
+    setError(null);
+    start(async () => {
+      try {
+        const r = await fn();
+        if (r.ok) {
+          setSession(r);
+          setNotice(r.message ?? null);
+          setManual(null);
+        } else {
+          setError(r.error);
+          if (what === "lookup" || r.locked) setPin("");
+        }
+      } catch {
+        setError("Could not reach the server — check your connection and try again");
+        if (what === "lookup") setPin("");
+      } finally {
+        setBusy(null);
+      }
+    });
   };
 
   useEffect(() => {
-    if (pin.length === 4 && !session) {
-      start(async () => {
-        const r = await lookupPin(slug, pin);
-        if (!r.ok) setPin("");
-        apply(r);
-      });
-    }
+    if (pin.length === 4 && !session) run("lookup", () => lookupPin(slug, pin));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pin]);
 
@@ -74,16 +82,26 @@ export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
   }
 
   if (!session) {
+    const checking = busy === "lookup";
     return (
       <Card>
         {Header}
         <h1 className="mb-4 mt-1 text-lg font-semibold">Enter your PIN</h1>
-        <div className="mb-6 flex justify-center gap-3.5">
-          {[0, 1, 2, 3].map((i) => (
-            <i key={i} className={cn("block size-3.5 rounded-full border-2 border-navy", i < pin.length && "bg-navy")} />
-          ))}
+
+        {/* The dots become the loader — it sits exactly where the eye already is. */}
+        <div className="mb-6 flex h-5 items-center justify-center gap-3.5">
+          {checking ? (
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-amber">
+              <Spinner className="size-4" /> Checking PIN…
+            </span>
+          ) : (
+            [0, 1, 2, 3].map((i) => (
+              <i key={i} className={cn("block size-3.5 rounded-full border-2 border-navy transition-colors", i < pin.length && "bg-navy")} />
+            ))
+          )}
         </div>
-        <div className="grid grid-cols-3 gap-2.5">
+
+        <div className={cn("grid grid-cols-3 gap-2.5 transition-opacity", checking && "pointer-events-none opacity-40")}>
           {["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "⌫"].map((k) => (
             <button
               key={k}
@@ -91,7 +109,7 @@ export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
               onClick={() => key(k)}
               disabled={pending}
               className={cn(
-                "h-[62px] rounded-[14px] bg-chalk text-[22px] font-medium text-navy active:bg-soft disabled:opacity-60",
+                "h-[62px] rounded-[14px] bg-chalk text-[22px] font-medium text-navy active:bg-soft",
                 (k === "C" || k === "⌫") && "text-[13px] text-navy-70",
               )}
             >
@@ -99,10 +117,7 @@ export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
             </button>
           ))}
         </div>
-        <div className={cn("mt-4 flex min-h-5 items-center justify-center gap-1.5 text-sm", error ? "text-red" : "text-navy-45")}>
-          {pending && <Spinner />}
-          {error ?? (pending ? "Checking…" : `Shift ${shift}`)}
-        </div>
+        <div className={cn("mt-4 min-h-5 text-sm", error ? "text-red" : "text-navy-45")}>{error ?? `Shift ${shift}`}</div>
       </Card>
     );
   }
@@ -132,30 +147,45 @@ export function CheckinClient({ slug, companyName, enabled, shift }: Props) {
       {manual ? (
         <ManualForm
           kind={manual}
-          pending={pending}
+          pending={busy === "manual"}
           onCancel={() => setManual(null)}
-          onSubmit={(time, ampm) => start(async () => apply(await manualTime(slug, pin, manual, time, ampm)))}
+          onSubmit={(time, ampm) => run("manual", () => manualTime(slug, pin, manual, time, ampm))}
         />
       ) : done ? (
         <div className="rounded-[14px] bg-chalk py-5 text-lg font-medium">Done for today</div>
       ) : !t.checkIn ? (
-        <Button className="h-16 w-full rounded-[14px] text-[17px]" disabled={pending} onClick={() => start(async () => apply(await checkIn(slug, pin)))}>
-          {pending && <Spinner className="size-5" />}
-          Check in now
+        <Button className="h-16 w-full rounded-[14px] text-[17px]" disabled={pending} onClick={() => run("in", () => checkIn(slug, pin))}>
+          {busy === "in" ? (
+            <>
+              <Spinner className="size-5" /> Checking in…
+            </>
+          ) : (
+            "Check in now"
+          )}
         </Button>
       ) : (
-        <Button variant="secondary" className="h-16 w-full rounded-[14px] text-[17px]" disabled={pending} onClick={() => start(async () => apply(await checkOut(slug, pin)))}>
-          {pending && <Spinner className="size-5" />}
-          Check out now
+        <Button variant="secondary" className="h-16 w-full rounded-[14px] text-[17px]" disabled={pending} onClick={() => run("out", () => checkOut(slug, pin))}>
+          {busy === "out" ? (
+            <>
+              <Spinner className="size-5" /> Checking out…
+            </>
+          ) : (
+            "Check out now"
+          )}
         </Button>
       )}
 
       {!manual && !done && (
-        <button type="button" className="mt-4 block w-full text-sm text-navy-70 underline underline-offset-4" onClick={() => setManual(t.checkIn ? "out" : "in")}>
+        <button
+          type="button"
+          disabled={pending}
+          className="mt-4 block w-full text-sm text-navy-70 underline underline-offset-4 disabled:opacity-50"
+          onClick={() => setManual(t.checkIn ? "out" : "in")}
+        >
           Forgot earlier? Enter the time yourself
         </button>
       )}
-      <button type="button" className="mt-4 block w-full text-sm text-navy-45" onClick={reset}>
+      <button type="button" disabled={pending} className="mt-4 block w-full text-sm text-navy-45 disabled:opacity-50" onClick={reset}>
         Start over
       </button>
     </Card>
@@ -175,6 +205,8 @@ function ManualForm({
 }) {
   const [time, setTime] = useState("");
   const [ampm, setAmpm] = useState<"AM" | "PM">(kind === "in" ? "PM" : "AM");
+  const preview = looseTimePreview(time, ampm);
+
   return (
     <form
       onSubmit={(e) => {
@@ -184,25 +216,48 @@ function ManualForm({
       className="text-left"
     >
       <label className="mb-1 block text-xs text-navy-70">{kind === "in" ? "Check-in" : "Check-out"} time</label>
-      <div className="mb-3 grid grid-cols-[2fr_1fr] gap-2">
+      <div className="mb-1.5 grid grid-cols-[2fr_1fr] gap-2">
         <input
           value={time}
           onChange={(e) => setTime(e.target.value)}
-          placeholder={kind === "in" ? "8:04" : "4:58"}
+          placeholder={kind === "in" ? "804 or 8.04" : "458 or 4.58"}
           inputMode="numeric"
           autoFocus
-          className="h-12 rounded-lg border border-soft bg-white px-3 text-center text-lg outline-none focus:border-amber"
+          disabled={pending}
+          className="h-12 rounded-lg border border-soft bg-white px-3 text-center text-lg outline-none focus:border-amber disabled:opacity-60"
         />
-        <select value={ampm} onChange={(e) => setAmpm(e.target.value as "AM" | "PM")} className="h-12 rounded-lg border border-soft bg-white px-2 text-lg">
+        <select
+          value={ampm}
+          onChange={(e) => setAmpm(e.target.value as "AM" | "PM")}
+          disabled={pending}
+          className="h-12 rounded-lg border border-soft bg-white px-2 text-lg disabled:opacity-60"
+        >
           <option>AM</option>
           <option>PM</option>
         </select>
       </div>
-      <Button type="submit" variant="secondary" className="h-12 w-full rounded-[12px] text-base" disabled={pending || !time}>
-        {pending && <Spinner />}
-        Save {kind === "in" ? "check-in" : "check-out"}
+      {/* Live readback: type "804" and see "→ 8:04 PM" before saving. */}
+      <div className={cn("mb-3 min-h-5 text-center text-sm", preview ? "text-navy" : "text-navy-45")}>
+        {preview ? (
+          <>
+            Will save as <b className="font-semibold">{preview}</b>
+          </>
+        ) : time ? (
+          "Type numbers only — 8, 804 or 8.04"
+        ) : (
+          "No colon needed — 804 works"
+        )}
+      </div>
+      <Button type="submit" variant="secondary" className="h-12 w-full rounded-[12px] text-base" disabled={pending || !preview}>
+        {pending ? (
+          <>
+            <Spinner /> Saving…
+          </>
+        ) : (
+          `Save ${kind === "in" ? "check-in" : "check-out"}`
+        )}
       </Button>
-      <button type="button" className="mt-3 block w-full text-center text-sm text-navy-45" onClick={onCancel}>
+      <button type="button" disabled={pending} className="mt-3 block w-full text-center text-sm text-navy-45 disabled:opacity-50" onClick={onCancel}>
         Cancel
       </button>
     </form>
